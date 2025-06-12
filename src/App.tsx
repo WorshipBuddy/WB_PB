@@ -13,7 +13,7 @@ function App() {
   }
 
   return (
-    <main className="container">
+    <main className="my-container h-screen bg-[#13152a]">
       <h1>Welcome to Tauri + React</h1>
 
       <div className="row">
@@ -27,7 +27,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <p className="text-blue-500">Click on the Tauri, Vite, and React logos to learn more.</p>
 
       <form
         className="row"
