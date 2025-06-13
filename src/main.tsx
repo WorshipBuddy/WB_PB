@@ -4,8 +4,12 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import App from './App';
 import './App.css';
 
+const theme = createTheme({});
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <MantineProvider defaultColorScheme="dark" theme={theme}>
+      <App />
+    </MantineProvider>
   </React.StrictMode>
 );
