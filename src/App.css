@@ -108,3 +108,18 @@ button {
     background-color: #0f0f0f69;
   }
 }
+
+.mantine-Input-input {
+  background-color: #ffffff;
+  border-color: #cccccc;
+  border-width: 1px;
+  box-shadow: none !important;
+}
+
+.mantine-NumberInput-control {
+  box-shadow: none !important;
+}
+
+.mantine-InputWrapper-label {
+  font-weight: 600;
+}
