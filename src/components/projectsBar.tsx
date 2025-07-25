@@ -2,35 +2,69 @@ import { Button, TextInput, ActionIcon, NumberInput } from "@mantine/core";
 import { IconMusic, IconBook, IconPlus, IconLink, IconSearch, IconHash } from "@tabler/icons-react";
 import { invoke } from '@tauri-apps/api/core';
 import { useState } from "react";
-import { Song } from "../lib/song";
+import { Song, RawSong, Slide } from "../lib/song";
 import SongCard from "./songCard";
 
 
 interface ProjectsBarProps {
   songs: Song[];
   setSongs: React.Dispatch<React.SetStateAction<Song[]>>;
+  curSongIndex: number;
+  setCurSongIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function ProjectsBar({ songs, setSongs }: ProjectsBarProps) {
+export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongIndex }: ProjectsBarProps) {
 
   const [setNumber, setSetNumber] = useState<number | string>("");
 
-  async function fetchSet() {
-    try {
-      if (setNumber != "") {
-        const result = await invoke<Song[]>('fetch_and_process_songs', { setNumber: setNumber.toString() })
-        console.log(result)
-        setSongs((prevSongs) => [...prevSongs, ...result]);
-      }
-    } catch (e) {
-      console.error('Error invoking fetch_and_process_songs:', e)
-    }
+  function convertRawSongs(rawSongs: RawSong[]): Song[] {
+    return rawSongs.map((rawSong) => {
+      const slides: Slide[] = [];
+  
+      rawSong.sections.forEach((section) => {
+        const lines = section.content.split("\n").filter((l) => l.trim() !== "");
+        for (let i = 0; i < lines.length; i += 4) {
+          slides.push({
+            section: section.title,
+            lines: lines.slice(i, i + 4),
+          });
+        }
+      });
+  
+      return {
+        songNumber: rawSong.songNumber,
+        title: rawSong.title,
+        author: rawSong.author,
+        sections: rawSong.sections,
+        slides: slides,
+      };
+    });
   }
 
-  const handleDelete = (titleToDelete: string) => {
-    setSongs((prevSongs) =>
-      prevSongs.filter((song) => song.title !== titleToDelete)
-    );
+  async function fetchSet() {
+    try {
+      if (setNumber !== "") {
+        const rawSongs = await invoke<RawSong[]>('fetch_and_process_songs', { 
+          setNumber: setNumber.toString() 
+        });
+        const songsWithSlides = convertRawSongs(rawSongs);
+        setSongs((prevSongs) => [...prevSongs, ...songsWithSlides]);
+      }
+    } catch (e) {
+      console.error('Error invoking fetch_and_process_songs:', e);
+    }
+  }
+  
+
+  const handleDelete = (indexToDelete: number) => {
+    if (curSongIndex == songs.length && curSongIndex != 0) {
+      setCurSongIndex((prevIndex) => prevIndex - 1)
+    }
+    setSongs((prevSongs) => {
+      const newSongs = [...prevSongs];
+      newSongs.splice(indexToDelete, 1);
+      return newSongs;
+    });
   };
 
   return (
@@ -96,9 +130,9 @@ export default function ProjectsBar({ songs, setSongs }: ProjectsBarProps) {
       <div className="flex-1 min-h-0 p-5 flex flex-col">
         <h2 className="font-bold mb-2">Song Library</h2>
         <div className="flex-1 min-h-0 overflow-y-auto">
-          {songs.map((song) => (
-            <div className="mb-2">
-              <SongCard key={song.title} song={song} onDelete={() => handleDelete(song.title)} />
+          {songs.map((song, i) => (
+            <div className="mb-2" onClick={() => {setCurSongIndex(i)}}>
+              <SongCard key={`${song.title}-${i}`} song={song} onDelete={() => handleDelete(i)} />
             </div>
           ))}
         </div>
