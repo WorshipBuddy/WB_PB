@@ -132,7 +132,7 @@ export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongI
         <div className="flex-1 min-h-0 overflow-y-auto">
           {songs.map((song, i) => (
             <div className="mb-2" onClick={() => {setCurSongIndex(i)}}>
-              <SongCard key={`${song.title}-${i}`} song={song} onDelete={() => handleDelete(i)} />
+              <SongCard key={`${song.title}-${i}`} song={song} onDelete={() => handleDelete(i)} isCurrent={curSongIndex == i} />
             </div>
           ))}
         </div>

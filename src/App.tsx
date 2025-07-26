@@ -40,7 +40,11 @@ function App() {
 
   useEffect(() => {
     sendSlide();
-  }, [curSlideIndex, songs]);
+  }, [curSongIndex, curSlideIndex, songs]);
+
+  useEffect(() => {
+    setCurSlideIndex(0);
+  }, [curSongIndex])
 
   const currentSong = songs.length > curSongIndex ? songs[curSongIndex] : null;
 
@@ -59,18 +63,63 @@ function App() {
                   <div className="space-y-4 overflow-y-auto pr-10 mt-4">
                     {currentSong.slides.map((slide, slideIndex) => (
                       <div
-                        key={slideIndex}
-                        className="bg-white rounded-2xl shadow-md p-4 mb-4 border border-gray-200"
+                        key={`slide-${slideIndex}`}
                         onClick={() => setCurSlideIndex(slideIndex)}
+                        className={`flex items-start justify-between rounded-2xl shadow-md border p-4 mb-4 transition-all cursor-pointer ${curSlideIndex === slideIndex
+                          ? "border-indigo-400 bg-indigo-50 border-2"
+                          : "border-gray-200 bg-white hover:shadow-lg"
+                          }`}
                       >
-                        <h2 className="text-indigo-600 font-bold uppercase mb-2 text-lg">
-                          {slide.section}
-                        </h2>
-                        {slide.lines.map((line, lineIndex) => (
-                          <p key={lineIndex} className="text-gray-800">
-                            {line}
-                          </p>
-                        ))}
+                        {/* Left side content */}
+                        <div className="flex-1 pr-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span
+                              className={`text-sm font-semibold px-3 py-1 rounded-full border ${slide.section.toLowerCase().includes("chorus")
+                                  ? "bg-black text-white border-black"
+                                  : (() => {
+                                    const lower = slide.section.toLowerCase();
+                                    if (lower.includes("verse")) {
+                                      // Try to extract a number from the section name
+                                      const numMatch = slide.section.match(/\d+/);
+                                      if (numMatch) {
+                                        const verseNum = parseInt(numMatch[0], 10);
+                                        // Alternate based on odd/even
+                                        return verseNum % 2 === 0
+                                          ? "bg-indigo-700 text-white"
+                                          : "bg-indigo-500 text-white";
+                                      }
+                                    }
+                                    // Default style if not a verse or chorus
+                                    return "bg-black text-white border-black";
+                                  })()
+                                }`}
+                            >
+                              {slide.section}
+                            </span>
+                          </div>
+
+                          {slide.lines.map((line, lineIndex) => (
+                            <p key={lineIndex} className="text-gray-800 leading-snug">
+                              {line}
+                            </p>
+                          ))}
+                        </div>
+
+                        {/* Right side status icon */}
+                        <div className="flex items-start justify-center">
+                          {curSlideIndex === slideIndex ? (
+                            <div className="flex items-center gap-1">
+                              {/* Live status dot */}
+                              <span className="w-3 h-3 rounded-full bg-indigo-500 shadow-md"></span>
+                              <span className="text-indigo-600 text-sm font-medium">Live</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1 opacity-50">
+                              <span className="w-3 h-3 rounded-full bg-gray-300"></span>
+                              <span className="text-gray-500 text-sm">Idle</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
