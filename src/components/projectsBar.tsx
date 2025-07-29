@@ -1,9 +1,10 @@
-import { Button, TextInput, ActionIcon, NumberInput } from "@mantine/core";
-import { IconMusic, IconBook, IconPlus, IconLink, IconSearch, IconHash } from "@tabler/icons-react";
+import { TextInput, ActionIcon, NumberInput } from "@mantine/core";
+import { IconPlus, IconLink, IconSearch, IconHash } from "@tabler/icons-react";
 import { invoke } from '@tauri-apps/api/core';
 import { useState } from "react";
 import { Song, RawSong, Slide } from "../lib/song";
 import SongCard from "./songCard";
+import CategoryPicker from "./categoryPicker";
 
 
 interface ProjectsBarProps {
@@ -69,19 +70,10 @@ export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongI
 
   return (
     <div className="justify-center min-w-[350px] bg-gray-100 text-black border-r border-gray-200 min-h-0 flex flex-col">
-      <div className="p-5 shrink-0">
-        <div className="flex gap-3">
-          <Button className="bg-indigo-500 hover:bg-indigo-600 flex-1 flex items-center justify-center gap-2">
-            <IconMusic className="w-5 h-5 mr-1" />
-            Songs
-          </Button>
-          <Button className="bg-indigo-500 hover:bg-indigo-600 flex-1 flex items-center justify-center gap-2">
-            <IconBook className="w-5 h-5 mr-1" />
-            Bible
-          </Button>
-        </div>
+      <div className="p-7 shrink-0">
+        <CategoryPicker></CategoryPicker>
       </div>
-      <div className="border-b border-gray-200 pb-5 px-5 shrink-0">
+      <div className="border-b border-gray-200 pb-7 px-7 shrink-0">
         <div className="flex gap-2 items-end">
           <TextInput
             className="flex-1"
@@ -92,7 +84,7 @@ export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongI
           <ActionIcon
             size="lg"
             variant="filled"
-            className="bg-black hover:bg-indigo-600"
+            className="bg-[#0c245e] hover:bg-[#0c245e] border-none"
           >
             <IconPlus size={16} />
           </ActionIcon>
@@ -111,7 +103,7 @@ export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongI
           <NumberInput
             variant="unstyled"
             className="flex-1"
-            label="Add from Set"
+            label="Import WorshipBuddy Set"
             placeholder="Set Number"
             leftSection={<IconHash size={16} />}
             value={setNumber} // ✅ controlled value
@@ -120,14 +112,14 @@ export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongI
           <ActionIcon
             size="lg"
             variant="filled"
-            className="bg-black hover:bg-indigo-600"
+            className="bg-[#0c245e] hover:bg-[#0c245e] border-none"
             onClick={fetchSet}
           >
             <IconPlus size={16} />
           </ActionIcon>
         </div>
       </div>
-      <div className="flex-1 min-h-0 p-5 flex flex-col">
+      <div className="flex-1 min-h-0 px-7 pb-7 pt-5 flex flex-col">
         <h2 className="font-bold mb-2">Song Library</h2>
         <div className="flex-1 min-h-0 overflow-y-auto">
           {songs.map((song, i) => (

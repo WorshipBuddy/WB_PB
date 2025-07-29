@@ -42,7 +42,7 @@ export default function HoldToDeleteButton({
   return (
     <ActionIcon
       variant="light"
-      color="red"
+      color="navy"
       radius="xl"
       size={size}
       onMouseDown={startHold}
@@ -64,15 +64,7 @@ export default function HoldToDeleteButton({
           viewBox="0 0 36 36"
         >
           <circle
-            stroke="rgba(0,0,0,0.1)"
-            strokeWidth="3"
-            fill="transparent"
-            r="16"
-            cx="18"
-            cy="18"
-          />
-          <circle
-            stroke="red"
+            stroke="navy"
             strokeWidth="3"
             strokeLinecap="round"
             fill="transparent"

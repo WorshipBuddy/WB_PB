@@ -6,7 +6,7 @@ import { Song } from "./lib/song";
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { emit, listen } from '@tauri-apps/api/event';
 import { Button } from "@mantine/core";
-import { IconPlayerPlay } from "@tabler/icons-react";
+import { IconPlayerPlayFilled } from "@tabler/icons-react";
 
 function App() {
 
@@ -53,9 +53,9 @@ function App() {
       <TopNavBar />
       <div className="flex flex-row flex-1 min-h-0">
         <ProjectsBar songs={songs} setSongs={setSongs} curSongIndex={curSongIndex} setCurSongIndex={setCurSongIndex}></ProjectsBar>
-        <div className="px-10 bg-white text-black h-full flex flex-col w-full min-h-0">
+        <div className="pl-10 bg-white text-black h-full flex flex-col w-full min-h-0">
           <div className="flex flex-1 min-h-0">
-            <div className="flex-1 flex flex-col border-r border-gray-200 mr-10 py-7 min-h-0">
+            <div className="flex-1 flex flex-col border-r border-gray-200 py-7 min-h-0">
               {currentSong ? (
                 <div className="flex flex-col h-full min-h-0">
                   <h1 className="text-2xl font-bold text-black mb-1">{currentSong.title}</h1>
@@ -66,7 +66,7 @@ function App() {
                         key={`slide-${slideIndex}`}
                         onClick={() => setCurSlideIndex(slideIndex)}
                         className={`flex items-start justify-between rounded-2xl shadow-md border p-4 mb-4 transition-all cursor-pointer ${curSlideIndex === slideIndex
-                          ? "border-indigo-400 bg-indigo-50 border-2"
+                          ? "border-[#0c245e] bg-[#b5c4ff50] border-2"
                           : "border-gray-200 bg-white hover:shadow-lg"
                           }`}
                       >
@@ -75,7 +75,7 @@ function App() {
                           <div className="flex items-center gap-2 mb-2">
                             <span
                               className={`text-sm font-semibold px-3 py-1 rounded-full border ${slide.section.toLowerCase().includes("chorus")
-                                  ? "bg-black text-white border-black"
+                                  ? "bg-[#0c245e] text-white border-black"
                                   : (() => {
                                     const lower = slide.section.toLowerCase();
                                     if (lower.includes("verse")) {
@@ -85,8 +85,8 @@ function App() {
                                         const verseNum = parseInt(numMatch[0], 10);
                                         // Alternate based on odd/even
                                         return verseNum % 2 === 0
-                                          ? "bg-indigo-700 text-white"
-                                          : "bg-indigo-500 text-white";
+                                          ? "bg-[#194bbf] text-white"
+                                          : "bg-[#b5c4ff] text-black";
                                       }
                                     }
                                     // Default style if not a verse or chorus
@@ -110,8 +110,8 @@ function App() {
                           {curSlideIndex === slideIndex ? (
                             <div className="flex items-center gap-1">
                               {/* Live status dot */}
-                              <span className="w-3 h-3 rounded-full bg-indigo-500 shadow-md"></span>
-                              <span className="text-indigo-600 text-sm font-medium">Live</span>
+                              <span className="w-3 h-3 rounded-full bg-[#0c245e] shadow-md"></span>
+                              <span className="text-[#0c245ebb] text-sm font-medium">Live</span>
                             </div>
                           ) : (
                             <div className="flex items-center gap-1 opacity-50">
@@ -129,14 +129,15 @@ function App() {
               )}
             </div>
 
-            <div className="flex-1 flex flex-col py-7 min-h-0">
+            <div className="flex-1 flex flex-col py-7 min-h-0 pr-10 pl-10 bg-[#b5c4ff30]">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold">Presentation Preview</h2>
                 <Button
-                  className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 flex items-center gap-2"
+                  size="sm"
+                  className="bg-[#b5c4ff] text-black px-4 py-2 rounded hover:bg-[#b5c4ff] hover:text-black hover:border-black flex items-center gap-2 font-bold"
                   onClick={openProjector}
                 >
-                  <IconPlayerPlay size={20} className="mr-2" />
+                  <IconPlayerPlayFilled size={18} className="mr-2" />
                   Present
                 </Button>
               </div>
