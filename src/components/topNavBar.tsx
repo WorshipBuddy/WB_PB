@@ -4,7 +4,11 @@ import { ActionIcon, Group, Image } from "@mantine/core";
 import { IconSettings, IconInfoCircle, IconUser } from "@tabler/icons-react";
 
 
-export default function TopNavBar() {
+interface TopNavBarProps {
+  setPage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function TopNavBar({ setPage }: TopNavBarProps) {
 
   return (
     <div className="sticky top-0 z-50">
@@ -23,7 +27,7 @@ export default function TopNavBar() {
         </div>
         <Group justify="center" gap={10} className="mr-3">
           <ActionIcon variant="outline" className="text-white hover:text-[#b5c4ff] hover:border-[#b5c4ff] border-white">
-            <IconSettings style={{ width: "70%", height: "70%" }} stroke={2} />
+            <IconSettings style={{ width: "70%", height: "70%" }} stroke={2} onClick={() => setPage("settings")} />
           </ActionIcon>
           <a href="/docs">
             <ActionIcon variant="outline" className="text-white hover:text-[#b5c4ff] hover:border-[#b5c4ff] border-white">

@@ -33,7 +33,7 @@ export default function ProjectsBar({ songs, setSongs, curSongIndex, setCurSongI
       });
   
       return {
-        songNumber: rawSong.songNumber,
+        songNumber: rawSong.song_number,
         title: rawSong.title,
         author: rawSong.author,
         sections: rawSong.sections,

@@ -4,7 +4,7 @@ export interface SongSection {
 }
 
 export interface RawSong {
-    songNumber: number;
+    song_number: number;
     title: string;
     author: string;
     sections: SongSection[];
