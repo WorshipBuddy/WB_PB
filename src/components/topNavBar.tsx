@@ -20,25 +20,14 @@ export default function TopNavBar({ setPage }: TopNavBarProps) {
               onClick={() => {window.location.href = '/';}}
             >
               <Image src="presenterbuddy-white-2.png" w={35} ></Image>
-              <p className="text-2xl font-bold text-white ml-4">Presenter Buddy</p>
-              <span className="ml-3 inline-block px-2 py-0.5 text-xs font-bold uppercase rounded-full border-white border-2 bg-transparent text-white">PRO</span>
+              <p className="text-2xl font-bold text-white ml-4">PresenterBuddy</p>
+              <span className="ml-3 inline-block px-2 py-0.5 text-xs font-bold uppercase rounded-full border-white border-2 bg-transparent text-white">LITE</span>
             </div>
           </a>
         </div>
         <Group justify="center" gap={10} className="mr-3">
           <ActionIcon variant="outline" className="text-white hover:text-[#b5c4ff] hover:border-[#b5c4ff] border-white">
             <IconSettings style={{ width: "70%", height: "70%" }} stroke={2} onClick={() => setPage("settings")} />
-          </ActionIcon>
-          <a href="/docs">
-            <ActionIcon variant="outline" className="text-white hover:text-[#b5c4ff] hover:border-[#b5c4ff] border-white">
-              <IconInfoCircle style={{ width: "70%", height: "70%" }} stroke={2} />
-            </ActionIcon>
-          </a>
-          <ActionIcon variant="filled" className="text-black bg-[#b5c4ff] hover:bg-[#b5c4ff] hover:text-black border-none">
-            <IconUser
-              style={{ width: "70%", height: "70%" }}
-              stroke={2}
-            />
           </ActionIcon>
         </Group>
       </div>

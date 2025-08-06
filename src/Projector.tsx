@@ -1,35 +1,67 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { listen, UnlistenFn, emit } from "@tauri-apps/api/event";
-import { Center } from "@mantine/core";
 
 function Projector() {
-  const [lines, setLines] = useState([]);
+  const [lines, setLines] = useState<string[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [fontSize, setFontSize] = useState<number>(100); // in px
 
   useEffect(() => {
-    emit('projector:mounted');
+    emit("projector:mounted");
 
     let unlisten: UnlistenFn | null = null;
 
     listen("projector:update", (event) => {
-      setLines((event.payload as any).lines || []);
+      const newLines = (event.payload as any).lines || [];
+      setLines(newLines);
     }).then((fn) => {
       unlisten = fn;
     });
 
     return () => {
-      if (unlisten) {
-        unlisten();
-      }
+      if (unlisten) unlisten();
     };
   }, []);
 
+  useEffect(() => {
+    if (!containerRef.current || !textRef.current || lines.length === 0) return;
+
+    const container = containerRef.current;
+    const text = textRef.current;
+
+    let size = 100;
+    const MIN_SIZE = 10;
+
+    text.style.fontSize = `${size}px`;
+
+    const fits = () =>
+      text.scrollHeight <= container.clientHeight &&
+      text.scrollWidth <= container.clientWidth;
+
+    const shrinkUntilFits = () => {
+      while (!fits() && size > MIN_SIZE) {
+        size -= 1;
+        text.style.fontSize = `${size}px`;
+      }
+      setFontSize(size);
+    };
+
+    requestAnimationFrame(shrinkUntilFits);
+  }, [lines]);
+
   return (
-    <div style={{ padding: 20, height: "100vh" }} className="flex items-center justify-center bg-black text-white">
-      <Center>
-        <p className="text-white text-[13vh] font-semibold leading-tight whitespace-pre-wrap text-center">
-          {lines.join('\n')}
-        </p>
-      </Center>
+    <div
+      ref={containerRef}
+      className="bg-black text-white flex items-center justify-center h-screen w-screen overflow-hidden"
+    >
+      <div
+        ref={textRef}
+        className="whitespace-pre-wrap font-semibold text-center leading-tight px-10"
+        style={{ fontSize: `${fontSize}px` }}
+      >
+        {lines.join("\n")}
+      </div>
     </div>
   );
 }

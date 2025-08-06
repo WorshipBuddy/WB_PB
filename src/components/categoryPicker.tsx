@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { IconBook, IconMusic } from '@tabler/icons-react';
 
 export default function CategoryPicker() {
-  const [value, setValue] = useState("songs"); // 0 for Option A, 1 for Option B
+  const [value, setValue] = useState("songs");
 
   return (
     <SegmentedControl
@@ -39,11 +39,11 @@ export default function CategoryPicker() {
         },
       ]}
       size="md"
-      radius="sm" // minimal rounding
+      radius="sm"
       classNames={{
-        root: 'w-full border border-gray-300', // always visible border
+        root: 'w-full border border-gray-300',
         control: 'flex-1',
-        indicator: '', // we'll set color in `styles`
+        indicator: '',
       }}
       styles={{
         indicator: {
