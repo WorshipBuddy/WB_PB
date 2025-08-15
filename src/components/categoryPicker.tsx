@@ -1,21 +1,24 @@
 import { SegmentedControl } from '@mantine/core';
-import { useState } from 'react';
 import { IconBook, IconMusic } from '@tabler/icons-react';
 
-export default function CategoryPicker() {
-  const [value, setValue] = useState("songs"); // 0 for Option A, 1 for Option B
+interface CategoryPickerProps {
+  currentPage: string;
+  onPageChange: (page: string) => void;
+}
+
+export default function CategoryPicker({ currentPage, onPageChange }: CategoryPickerProps) {
 
   return (
     <SegmentedControl
       fullWidth
-      value={value}
-      onChange={setValue}
+      value={currentPage}
+      onChange={onPageChange}
       data={[
         {
           label: (
             <div
               className={`flex items-center justify-center gap-2 w-full ${
-                value === 'songs' ? 'text-white' : 'text-black'
+                currentPage === 'songs' ? 'text-white' : 'text-black'
               }`}
             >
               <IconMusic size={16} />
@@ -28,7 +31,7 @@ export default function CategoryPicker() {
           label: (
             <div
               className={`flex items-center justify-center gap-2 w-full ${
-                value === 'bible' ? 'text-white' : 'text-black'
+                currentPage === 'bible' ? 'text-white' : 'text-black'
               }`}
             >
               <IconBook size={16} />
