@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@mantine/core";
-import { IconPlayerPlayFilled } from "@tabler/icons-react";
+import { IconPlayerPlayFilled, IconEyeOff, IconPlayerStop, IconEye } from "@tabler/icons-react";
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { emit, listen } from '@tauri-apps/api/event';
 import { useState, useEffect } from "react";
@@ -17,6 +17,9 @@ interface SongViewProps {
 export default function SongView({ songs, curSongIndex }: SongViewProps) {
 
   const [curSlideIndex, setCurSlideIndex] = useState<number>(0);
+  const [isPresenting, setIsPresenting] = useState<boolean>(false);
+  const [isFaded, setIsFaded] = useState<boolean>(false);
+  const [projectorWindow, setProjectorWindow] = useState<any>(null);
 
   const sendSlide = () => {
     const currentSong = songs.length > curSongIndex ? songs[curSongIndex] : null;
@@ -30,6 +33,28 @@ export default function SongView({ songs, curSongIndex }: SongViewProps) {
   useEffect(() => {
     sendSlide();
   }, [curSongIndex, curSlideIndex, songs]);
+
+  // Listen for projector window close to reset state
+  useEffect(() => {
+    const checkProjectorClosed = setInterval(() => {
+      if (projectorWindow) {
+        // Check if the window is still open
+        try {
+          // Try to access a property to see if window is still valid
+          if (projectorWindow.label) {
+            // Window is still open
+          }
+        } catch {
+          // Window is closed
+          setIsPresenting(false);
+          setIsFaded(false);
+          setProjectorWindow(null);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(checkProjectorClosed);
+  }, [projectorWindow]);
 
   useEffect(() => {
     setCurSlideIndex(0);
@@ -45,6 +70,7 @@ export default function SongView({ songs, curSongIndex }: SongViewProps) {
       x: 1920,  // position on second monitor (if your primary is 1920 wide)
       y: 0
     });
+    setProjectorWindow(projector);
     projector.once('tauri://created', function () {
       sendSlide();
     });
@@ -132,14 +158,72 @@ export default function SongView({ songs, curSongIndex }: SongViewProps) {
         <div className="flex-1 flex flex-col py-7 min-h-0 pr-10 pl-10 bg-[#b5c4ff30]">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold">Presentation Preview</h2>
-            <Button
-              size="sm"
-              className="bg-[#b5c4ff] text-black px-4 py-2 rounded hover:bg-[#b5c4ff] hover:text-black hover:border-black flex items-center gap-2 font-bold"
-              onClick={openProjector}
-            >
-              <IconPlayerPlayFilled size={18} className="mr-2" />
-              Present
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                className={`px-4 py-2 rounded flex items-center gap-2 font-bold ${
+                  isPresenting 
+                    ? 'bg-red-600 hover:bg-red-700 text-white' 
+                    : 'bg-[#b5c4ff] hover:bg-[#b5c4ff] text-black hover:border-black'
+                }`}
+                onClick={() => {
+                  if (isPresenting) {
+                    // End presentation and close projector
+                    setIsPresenting(false);
+                    setIsFaded(false);
+                    emit("projector:end", {});
+                    // Close the projector window
+                    if (projectorWindow) {
+                      projectorWindow.close();
+                      setProjectorWindow(null);
+                    }
+                  } else {
+                    // Start presentation
+                    setIsPresenting(true);
+                    openProjector();
+                  }
+                }}
+              >
+                {isPresenting ? (
+                  <>
+                    <IconPlayerStop size={18} className="mr-2" />
+                    End Presentation
+                  </>
+                ) : (
+                  <>
+                    <IconPlayerPlayFilled size={18} className="mr-2" />
+                    Present
+                  </>
+                )}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className={`px-4 py-2 rounded flex items-center gap-2 font-bold ${
+                  isFaded 
+                    ? 'text-green-600 border-green-600 hover:bg-green-600 hover:text-white' 
+                    : 'text-[#0c245e] border-[#0c245e] hover:bg-[#0c245e] hover:text-white'
+                }`}
+                onClick={() => {
+                  const newFadeState = !isFaded;
+                  setIsFaded(newFadeState);
+                  emit("projector:fade", { fade: newFadeState });
+                }}
+                disabled={!isPresenting}
+              >
+                {isFaded ? (
+                  <>
+                    <IconEye size={18} className="mr-2" />
+                    Restore
+                  </>
+                ) : (
+                  <>
+                    <IconEyeOff size={18} className="mr-2" />
+                    Fade to Black
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
 
           <div className="w-full mx-auto flex-1 flex flex-col">
